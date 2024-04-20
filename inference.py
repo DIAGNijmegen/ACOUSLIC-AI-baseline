@@ -59,17 +59,11 @@ def run():
     fetal_abdomen_segmentation, fetal_abdomen_frame_number = select_fetal_abdomen_mask_and_frame(
         fetal_abdomen_postprocessed)
 
-    # Convert the 2D mask to a 3D mask (this is solely for visualization purposes)
-    fetal_abdomen_segmentation = convert_2d_mask_to_3d(
-        mask_2d=fetal_abdomen_segmentation,
-        frame_number=fetal_abdomen_frame_number,
-        number_of_frames=fetal_abdomen_probability_map.shape[1],
-    )
-
     # Save your output
     write_array_as_image_file(
         location=OUTPUT_PATH / "images/fetal-abdomen-segmentation",
         array=fetal_abdomen_segmentation,
+        frame_number=fetal_abdomen_frame_number,
     )
     write_json_file(
         location=OUTPUT_PATH / "fetal-abdomen-frame-number.json",
@@ -116,11 +110,18 @@ def get_image_file_path(*, location):
     return input_files[0]
 
 
-def write_array_as_image_file(*, location, array):
+def write_array_as_image_file(*, location, array, frame_number=None):
     location.mkdir(parents=True, exist_ok=True)
-
-    # You may need to change the suffix to .tiff to match the expected output
     suffix = ".mha"
+    # Assert that the array is 2D
+    assert array.ndim == 2, f"Expected a 2D array, got {array.ndim}D."
+    
+    # Convert the 2D mask to a 3D mask (this is solely for visualization purposes)
+    array = convert_2d_mask_to_3d(
+        mask_2d=array,
+        frame_number=frame_number,
+        number_of_frames=840,
+    )
 
     image = SimpleITK.GetImageFromArray(array)
     # Set the spacing to 0.28mm in all directions
@@ -135,8 +136,18 @@ def write_array_as_image_file(*, location, array):
 def convert_2d_mask_to_3d(*, mask_2d, frame_number, number_of_frames):
     # Convert a 2D mask to a 3D mask
     mask_3d = np.zeros((number_of_frames, *mask_2d.shape), dtype=np.uint8)
-    mask_3d[frame_number, :, :] = mask_2d
-    return mask_3d
+    # If frame_number == -1, return a 3D mask with all zeros
+    if frame_number == -1:
+        return mask_3d
+    # If frame_number is within the valid range, set the corresponding frame to the 2D mask
+    if frame_number is not None and 0 <= frame_number < number_of_frames:
+        mask_3d[frame_number, :, :] = mask_2d
+        return mask_3d
+    # If frame_number is None or out of bounds, raise a ValueError
+    else:
+        raise ValueError(
+            f"frame_number must be between -1 and {number_of_frames - 1}, got {frame_number}."
+        )
 
 
 def print_directory_contents(path):
