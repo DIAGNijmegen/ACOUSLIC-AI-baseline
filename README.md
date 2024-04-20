@@ -19,15 +19,15 @@ This algorithm is a deep learning-based classification and segmentation model ba
 ### Source code
 - [Algorithm inference](https://github.com/DIAGNijmegen/ACOUSLIC-AI-baseline/blob/main/inference.py)
 
-## Builging your own AI algorithm: Step-by-step instructions
+## Building your own AI algorithm: Step-by-step instructions
 The instructions below provide guidelines for adapting the provided baseline code to package your own medical imaging algorithm for deployment as a Docker container in the [ACOUSLIC-AI challenge](https://acouslic-ai.grand-challenge.org/).
 
-### 1. Setting Up Your Development Environment
+### 1. Setting up your development environment
 Ensure you have the necessary software installed:
 - Python 
 - Docker
 - Necessary Python libraries: numpy, SimpleITK, torch, glob2, and any other libraries your algorithm requires.
-### 2. Integrating Your Algorithm
+### 2. Integrating your algorithm
 - Locate the section in the code where the FetalAbdomenSegmentation class is instantiated and used. You will replace this segment with your own model’s code. Here is what you need to do:
 ```
 # Instantiate the algorithm
@@ -50,14 +50,14 @@ segmentation_mask, frame_number = algorithm.extract_segmentation(postprocessed_o
 - `postprocess`: Implement any necessary steps here to refine the prediction into a usable segmentation mask.
 - `extract_segmentation`: Implement logic to extract the segmentation mask and identify the relevant frame number from the postprocessed output.
 
-### 3. Handling Input and Output
+### 3. Handling input and output
 Make sure your implementation adheres to the input and output conventions set by the provided code:
 - **Input:** Your algorithm may use the load_image_file_as_array() function to load images.
 - **Output:** Your algorithm should output two key pieces of information:
-  - Segmentation Mask: A 2D numpy array of type np.uint8.
+  - Segmentation mask: A 2D numpy array of type np.uint8.
   - Frame number: An integer indicating the frame number where the segmentation was found, or -1 if no relevant frame was found.
 
-### 4. Packaging and Testing Your Container
+### 4. Packaging and testing your container
 Follow these steps to package your algorithm:
 - Create a Dockerfile that sets up the environment, installs dependencies, and configures the script as the container's entry point.
 - Build the Docker image:
@@ -70,7 +70,7 @@ docker build -t your-algorithm-container .
 ```
 Ensure this script is set up to properly mount the directories for input and output.
 
-### 5. Exporting the Container for Deployment
+### 5. Exporting the container for deployment
 To prepare your Docker image for deployment, save it as a compressed file:
 ```
 docker save your-algorithm-container | gzip -c > your-algorithm-container.tar.gz
