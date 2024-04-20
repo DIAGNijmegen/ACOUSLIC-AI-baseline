@@ -1,0 +1,14 @@
+{
+    "channel_names": {
+        "0": "rescale_to_0_1"
+    },
+    "labels": {
+        "background": 0,
+        "head": 1,
+        "torso": 2
+    },
+    "numTraining": 2223,
+    "file_ending": ".nii.gz",
+    "name": "Dataset107_HeadTorso",
+    "description": "Contains torso and head annotations. Head and torso were annotated intermittently and interpolated for frames in between. Each OSP is separated into its 6 sweep files. Single AC and HC frames from cases not included in the head and torso annotations are included in the dataset."
+}
