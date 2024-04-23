@@ -34,4 +34,6 @@ Explore the following resources to understand the baseline algorithm, set up you
 # Issues
 Please feel free to report any issues you encounter [here](https://github.com/DIAGNijmegen/ACOUSLIC-AI-baseline/issues). 
 
+# License
+This project is licensed under the [LICENSE](LICENSE) file contained in the repository.
 
